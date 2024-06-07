@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %} Listar Productos {% endblock %}
+
+{% block content %}
+<h1>Lista de Productos</h1>
+
+<div class="text-end">
+    <a href="{% url 'crear_producto' %}" class="btn btn-primary mb-3"><i class='bx bx-plus'></i> Crear Nuevo Producto</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Productos</h6>
+    </div>
+    <div class="card-body">
+        <div class="d-flex justify-content-center mb-3">
+            <!-- Botón de importar en modal -->
+            <button type="button" class="btn btn-dark text-white me-3" data-bs-toggle="modal" data-bs-target="#importModal">
+                <i class='bx bx-import'></i> Importar CSV
+            </button>
+
+            <!-- Botón de exportar -->
+            <form method="POST" action="{% url 'export_csv' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success"><i class='bx bx-export'></i> Exportar CSV</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table id="productosTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Precio</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.precio }}</td>
+                        <td>{{ producto.cantidad }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-info btn-sm"><i class='bx bx-detail'></i></a>
+                            <a href="{% url 'actualizar_producto' producto.id %}" class="btn btn-warning btn-sm"><i class='bx bx-pencil'></i></i></a>
+                            <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-danger btn-sm"><i class='bx bx-trash'></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">Importar CSV</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'import_csv' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Seleccionar archivo CSV:</label>
+                        <input type="file" name="file" id="file" accept=".csv" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Importar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

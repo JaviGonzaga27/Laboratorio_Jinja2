@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Detalle del Producto {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="text-center">{{ producto.nombre }}</h1>
+            <hr>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Precio: {{ producto.precio }}</h5>
+                    <p class="card-text">Cantidad: {{ producto.cantidad }}</p>
+                    <div class="justify-content-between">
+                        <a href="{% url 'actualizar_producto' producto.id %}" class="btn btn-warning">Actualizar</a>
+                        <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-danger">Eliminar</a>
+                        <a href="{% url 'listar_productos' %}" class="btn btn-secondary">Regresar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

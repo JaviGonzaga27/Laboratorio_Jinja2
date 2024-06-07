@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %} Actualizar Producto {% endblock %}
+
+{% block content %}
+<h1>{{ view.title }}</h1>
+<div class="container">
+    <h1>Actualizar Producto</h1>
+    <form id="updateProducto" method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_nombre" class="form-label">Nombre</label>
+            {{ form.nombre }}
+            <div class="invalid-feedback" id="error-nombre"></div>
+        </div>
+        <div class="mb-3">
+            <label for="id_precio" class="form-label">Precio</label>
+            {{ form.precio }}
+            <div class="invalid-feedback" id="error-precio"></div>
+        </div>
+        <div class="mb-3">
+            <label for="id_cantidad" class="form-label">Cantidad</label>
+            {{ form.cantidad }}
+            <div class="invalid-feedback" id="error-cantidad"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{% url 'listar_productos' %}" class="btn btn-secondary">Regresar</a>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        validarCantidad('id_cantidad', 'error-cantidad', 'newProducto', 100);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        validarNombre('id_nombre', 'error-nombre', 'newProducto');
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        validarPrecio('id_precio', 'error-precio', 'newProducto');
+    });
+</script>
+
+<script>
+    (function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+
+    Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+    }, false)
+    })})()
+
+    function validarNombre(inputId, errorId, formularioId) {
+        const nombreInput = document.getElementById(inputId);
+        const errorNombre = document.getElementById(errorId);
+        const formulario = document.getElementById(formularioId);
+
+        // Función de validación en tiempo real
+        const validarEnTiempoReal = () => {
+            const valor = nombreInput.value.trim();
+
+            switch (true) {
+                case valor === '':
+                    errorNombre.textContent = 'Por favor, ingrese un nombre válido.';
+                    nombreInput.setCustomValidity('Por favor, ingrese un nombre válido.');
+                    break;
+                case valor.length < 3:
+                    errorNombre.textContent = 'El nombre debe tener al menos 3 caracteres.';
+                    nombreInput.setCustomValidity('El nombre debe tener al menos 3 caracteres.');
+                    break;
+                default:
+                    errorNombre.textContent = '';
+                    nombreInput.setCustomValidity('');
+            }
+        };
+
+        // Agregar evento 'input' para validación en tiempo real
+        nombreInput.addEventListener('input', validarEnTiempoReal);
+
+        // Agregar evento 'submit' para validación al enviar el formulario
+        formulario.addEventListener('submit', (event) => {
+            if (nombreInput.value.trim() === '') {
+                event.preventDefault();
+                errorNombre.textContent = 'Por favor, ingrese un nombre válido.';
+                nombreInput.setCustomValidity('Por favor, ingrese un nombre válido.');
+            }
+        });
+    }
+
+    function validarPrecio(inputId, errorId, formularioId) {
+        const precioInput = document.getElementById(inputId);
+        const errorPrecio = document.getElementById(errorId);
+        const formulario = document.getElementById(formularioId);
+
+        // Función de validación en tiempo real
+        const validarEnTiempoReal = () => {
+            const valor = precioInput.value.trim();
+
+            switch (true) {
+                case valor === '':
+                    errorPrecio.textContent = 'Por favor, ingrese un numero válido.';
+                    precioInput.setCustomValidity('Por favor, ingrese un numero válido.');
+                    break;
+                case isNaN(valor):
+                    errorPrecio.textContent = 'Por favor, ingrese un número válido.';
+                    precioInput.setCustomValidity('Por favor, ingrese un número válido.');
+                    break;
+                case parseFloat(valor) < 0:
+                    errorPrecio.textContent = 'Por favor, ingrese un número positivo.';
+                    precioInput.setCustomValidity('Por favor, ingrese un número positivo.');
+                    break;
+                default:
+                    errorPrecio.textContent = '';
+                    precioInput.setCustomValidity('');
+            }
+        };
+
+        // Agregar evento 'input' para validación en tiempo real
+        precioInput.addEventListener('input', validarEnTiempoReal);
+
+        // Agregar evento 'submit' para validación al enviar el formulario
+        formulario.addEventListener('submit', (event) => {
+            if (precioInput.value.trim() === '') {
+                event.preventDefault();
+                errorPrecio.textContent = 'Por favor, ingrese un numero válido.';
+                precioInput.setCustomValidity('Por favor, ingrese un numero válido.');
+            }
+        });
+    }
+
+    function validarCantidad(inputId, errorId, formularioId) {
+        const cantidadInput = document.getElementById(inputId);
+        const errorCantidad = document.getElementById(errorId);
+        const formulario = document.getElementById(formularioId);
+
+        // Función de validación en tiempo real
+        const validarEnTiempoReal = () => {
+        const valor = cantidadInput.value.trim();
+
+        switch (true) {
+            case valor === '':
+                errorCantidad.textContent = 'Por favor, ingrese una cantidad válida.';
+                cantidadInput.setCustomValidity('Por favor, ingrese una cantidad válida.');
+            break;
+            case isNaN(valor):
+                errorCantidad.textContent = 'Por favor, ingrese un número válido.';
+                cantidadInput.setCustomValidity('Por favor, ingrese un número válido.');
+            break;
+            case parseInt(valor) < 1:
+                errorCantidad.textContent = 'Por favor, ingrese un número positivo.';
+                cantidadInput.setCustomValidity('Por favor, ingrese un número positivo.');
+            break;
+            default:
+                errorCantidad.textContent = '';
+                cantidadInput.setCustomValidity('');
+            }
+        };
+
+        // Agregar evento 'input' para validación en tiempo real
+        cantidadInput.addEventListener('input', validarEnTiempoReal);
+
+        // Agregar evento 'submit' para validación al enviar el formulario
+        formulario.addEventListener('submit', (event) => {
+            if (cantidadInput.value.trim() === '') {
+                event.preventDefault();
+                errorCantidad.textContent = 'Por favor, ingrese una cantidad válida.';
+                cantidadInput.setCustomValidity('Por favor, ingrese una cantidad válida.');
+            }
+        });
+    }
+</script>
+
+{% endblock %}
